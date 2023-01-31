@@ -1,7 +1,7 @@
 package com.example.workenvironment.datastore
 
 
-import com.example.workenvironment.data.UserData
+import com.example.workenvironment.model.UserData
 import kotlinx.coroutines.flow.Flow
 
 interface StoreUserData {

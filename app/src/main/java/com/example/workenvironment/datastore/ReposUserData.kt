@@ -3,7 +3,7 @@ package com.example.workenvironment.datastore
 import androidx.datastore.core.DataStore
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.emptyPreferences
-import com.example.workenvironment.data.UserData
+import com.example.workenvironment.model.UserData
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.map
