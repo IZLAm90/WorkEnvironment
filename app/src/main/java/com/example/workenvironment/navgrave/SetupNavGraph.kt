@@ -1,6 +1,7 @@
 package com.example.workenvironment.navgrave
 
 import android.util.Log
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
@@ -8,6 +9,7 @@ import androidx.navigation.navigation
 import com.example.workenvironment.datastore.ReposUserData
 import com.example.workenvironment.presentation.homeuser.HomeUSer
 import com.example.workenvironment.presentation.login.Login
+import com.example.workenvironment.presentation.login.LoginViewModel
 import kotlinx.coroutines.CoroutineScope
 
 fun NavGraphBuilder.LoginHostGraph (navController : NavHostController,userRepo: ReposUserData,scope: CoroutineScope){

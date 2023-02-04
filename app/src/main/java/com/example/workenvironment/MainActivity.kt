@@ -17,7 +17,10 @@ import androidx.navigation.compose.rememberNavController
 import com.example.workenvironment.datastore.ReposUserData
 import com.example.workenvironment.navgrave.SetupNavGraph
 import com.example.workenvironment.ui.theme.WorkEnvironmentTheme
+import dagger.hilt.android.AndroidEntryPoint
+
 private val PREFERENCES_NAME_USER =  "sample_datastore_prefs"
+@AndroidEntryPoint
 class MainActivity : ComponentActivity() {
     private val Context.prefsDataStore by preferencesDataStore(name = PREFERENCES_NAME_USER)
     var userRepo : ReposUserData ?=null

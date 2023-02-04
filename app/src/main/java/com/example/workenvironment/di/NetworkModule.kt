@@ -2,17 +2,23 @@ package com.example.workenvironment.di
 
 import android.util.Log
 import com.example.workenvironment.data.remote.NetworkRquests
+import dagger.Module
 import dagger.Provides
+import dagger.hilt.InstallIn
+import dagger.hilt.components.SingletonComponent
+import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
+import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
-import retrofit2.converter.moshi.MoshiConverterFactory
 import java.util.concurrent.TimeUnit
 import javax.inject.Named
 import javax.inject.Singleton
 
+@Module
+@InstallIn(SingletonComponent::class)
 object NetworkModule {
     val apiServiceHeader = Interceptor { chain ->
         val request = chain.request().newBuilder().addHeader("Authorization", "Bearer " )
@@ -27,7 +33,7 @@ object NetworkModule {
             .callTimeout(5, TimeUnit.SECONDS)
             .connectTimeout(5, TimeUnit.SECONDS)
             .writeTimeout(5, TimeUnit.SECONDS)
-            .addInterceptor(apiServiceHeader)
+//            .addInterceptor(apiServiceHeader)
             .build()
     }
     @Singleton
@@ -41,10 +47,14 @@ object NetworkModule {
     }
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
+        val contentType= "application/json".toMediaType()
+        val json= Json{
+            ignoreUnknownKeys =true
+        }
+
         return Retrofit.Builder()
-            .baseUrl("")
+            .baseUrl("http://185.137.246.85/")
             .addConverterFactory(GsonConverterFactory.create())
-            .addConverterFactory(MoshiConverterFactory.create())
             .client(okHttpClient)
             .build()
     }

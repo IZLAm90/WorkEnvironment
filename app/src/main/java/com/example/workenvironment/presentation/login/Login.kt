@@ -1,5 +1,6 @@
 package com.example.workenvironment.presentation.login
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -19,16 +20,24 @@ import androidx.compose.ui.text.input.PasswordVisualTransformation
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.example.workenvironment.R
 import com.example.workenvironment.model.UserData
 import com.example.workenvironment.datastore.ReposUserData
 import com.example.workenvironment.navgrave.Screen
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.catch
+import kotlinx.coroutines.flow.collect
+import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 @Composable
-fun Login(navController: NavController,userRepo:ReposUserData,scope:CoroutineScope) {
+fun Login(navController: NavController,userRepo:ReposUserData,scope:CoroutineScope,loginViewModel: LoginViewModel = hiltViewModel()) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
         Spacer(modifier = Modifier.height(100.dp))
         Image(
@@ -63,14 +72,14 @@ fun Login(navController: NavController,userRepo:ReposUserData,scope:CoroutineSco
             )
         }
         Spacer(modifier = Modifier.height(20.dp))
-        Bottom(navController,userRepo,scope, userName =userName, password =password  )
+        Bottom(navController,userRepo,scope, userName =userName, password =password,loginViewModel  )
     }
 
 }
 
 
 @Composable
-fun Bottom(navController: NavController,userRepo: ReposUserData,scope: CoroutineScope,userName:String,password:String){
+fun Bottom(navController: NavController,userRepo: ReposUserData,scope: CoroutineScope,userName:String,password:String,loginViewModel: LoginViewModel= hiltViewModel()){
     Box(modifier = Modifier
         .fillMaxWidth()
         .padding(40.dp, 0.dp, 40.dp, 0.dp)
@@ -79,11 +88,27 @@ fun Bottom(navController: NavController,userRepo: ReposUserData,scope: Coroutine
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Button(onClick = {
                 scope.launch {
-                    userRepo.setUserData(UserData(userName = userName, passWord = password))
+                    withContext(Dispatchers.IO){
+                        val responce= loginViewModel.userLogin(UserData(userName = userName, passWord = password))
+                        withContext(Dispatchers.Main){
+                            if (responce.success){
+                                Log.d("islam", "Bottom: okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+                            }else{
+                                Log.d("islam", "Bottom: nooooooooooooo${responce.message} ")
+                            }
+                        }
+                    }
+
+//                    userRepo.setUserData(UserData(userName = userName, passWord = password))
                 }
-                navController.navigate(route = Screen.HomeUser.passUSerName(userName))},
+//                navController.navigate(route = Screen.HomeUser.passUSerName(userName))
+
+                             },
                 shape =RoundedCornerShape(20.dp),
-                modifier = Modifier.fillMaxWidth().height(50.dp).background(Color.Blue) ){
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(50.dp)
+                    .background(Color.Blue) ){
                 Text(
                     fontWeight = FontWeight.Bold ,
                     color = Color.White, text = "Login" )
