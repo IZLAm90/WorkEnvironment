@@ -21,10 +21,11 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
     val apiServiceHeader = Interceptor { chain ->
-        val request = chain.request().newBuilder().addHeader("Authorization", "Bearer " )
+        val request = chain.request().newBuilder()
         Log.d("islam", "Interceptor: ${chain.request()} ")
         chain.proceed(request.build())
     }
+
     @Singleton
     @Provides
     fun provideOkHttp(): OkHttpClient {
@@ -33,9 +34,10 @@ object NetworkModule {
             .callTimeout(5, TimeUnit.SECONDS)
             .connectTimeout(5, TimeUnit.SECONDS)
             .writeTimeout(5, TimeUnit.SECONDS)
-//            .addInterceptor(apiServiceHeader)
+            .addInterceptor(apiServiceHeader)
             .build()
     }
+
     @Singleton
     @Provides
     @Named("loggingInterceptor")
@@ -45,11 +47,12 @@ object NetworkModule {
             Log.d("islam", "provideLoggingInterceptor: ${this.level} ")
         }
     }
+
     @Provides
     fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
-        val contentType= "application/json".toMediaType()
-        val json= Json{
-            ignoreUnknownKeys =true
+        val contentType = "application/json".toMediaType()
+        val json = Json {
+            ignoreUnknownKeys = true
         }
 
         return Retrofit.Builder()
@@ -58,6 +61,7 @@ object NetworkModule {
             .client(okHttpClient)
             .build()
     }
+
     @Provides
     fun provideApiClient(retrofit: Retrofit): NetworkRquests {
         return retrofit.create(NetworkRquests::class.java)

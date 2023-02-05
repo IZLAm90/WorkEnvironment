@@ -39,6 +39,7 @@ import kotlinx.coroutines.withContext
 @Composable
 fun Login(navController: NavController,userRepo:ReposUserData,scope:CoroutineScope,loginViewModel: LoginViewModel = hiltViewModel()) {
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
+        CircularProgressIndicator(progress = 1F,color =Color.Blue, strokeWidth = 3.dp, modifier = Modifier.fillMaxSize())
         Spacer(modifier = Modifier.height(100.dp))
         Image(
             modifier = Modifier.padding(40.dp,40.dp,40.dp,10.dp),
@@ -89,7 +90,7 @@ fun Bottom(navController: NavController,userRepo: ReposUserData,scope: Coroutine
             Button(onClick = {
                 scope.launch {
                     withContext(Dispatchers.IO){
-                        val responce= loginViewModel.userLogin(UserData(userName = userName, passWord = password))
+                        val responce= loginViewModel.userLogin(UserData(userName = userName, password))
                         withContext(Dispatchers.Main){
                             if (responce.success){
                                 Log.d("islam", "Bottom: okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")

@@ -10,7 +10,6 @@ import retrofit2.http.Query
 
 interface NetworkRquests {
 
-
     @POST("api/v1/Auth/PortalLogin")
     suspend fun login(@Body loginUser: UserData): LoginResponse
 

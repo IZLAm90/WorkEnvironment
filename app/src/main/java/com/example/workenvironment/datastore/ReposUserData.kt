@@ -13,7 +13,7 @@ class ReposUserData(private val prefsDataStore: DataStore<androidx.datastore.pre
     override suspend fun setUserData(data: UserData) {
         prefsDataStore.edit{ pref->
         pref[PreferenceKeys.UserName]=data.userName
-        pref[PreferenceKeys.UserPassWord]=data.passWord
+        pref[PreferenceKeys.UserPassWord]=data.password
         }
     }
 
