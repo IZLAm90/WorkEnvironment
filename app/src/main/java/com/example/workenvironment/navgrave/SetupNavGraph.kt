@@ -7,6 +7,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.example.workenvironment.datastore.ReposUserData
+import com.example.workenvironment.presentation.homeadmin.HomeAdmin
 import com.example.workenvironment.presentation.homeuser.HomeUSer
 import com.example.workenvironment.presentation.login.Login
 import com.example.workenvironment.presentation.login.LoginViewModel
@@ -20,6 +21,9 @@ fun NavGraphBuilder.LoginHostGraph (navController : NavHostController,userRepo: 
         composable(route = Screen.HomeUser.route){
             HomeUSer(navController= navController)
             Log.d("islam", "LoginHostGraph: ${it.arguments?.get("username")}")
+        }
+        composable(route=Screen.HomeAdmin.route){
+            HomeAdmin()
         }
     }
 }

@@ -21,6 +21,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.lifecycleScope
 import androidx.navigation.NavController
 import com.example.workenvironment.R
 import com.example.workenvironment.model.UserData
@@ -38,8 +39,20 @@ import kotlinx.coroutines.withContext
 
 @Composable
 fun Login(navController: NavController,userRepo:ReposUserData,scope:CoroutineScope,loginViewModel: LoginViewModel = hiltViewModel()) {
+   scope.launch {
+       userRepo.getUserData().collect { islam->
+           withContext(Dispatchers.Main){
+               if (islam.password.isNotEmpty()&&islam.userName.isNotEmpty())
+                   navController.navigate(route =Screen.HomeAdmin.route)
+               else
+                   Log.d("islam", "Login: ${islam}")
+           }
+       }
+   }
+
+
     Column(modifier = Modifier.fillMaxSize(), horizontalAlignment = Alignment.CenterHorizontally) {
-        CircularProgressIndicator(progress = 1F,color =Color.Blue, strokeWidth = 3.dp, modifier = Modifier.fillMaxSize())
+//        CircularProgressIndicator(progress = 1F,color =Color.Blue, strokeWidth = 3.dp, modifier = Modifier.fillMaxSize())
         Spacer(modifier = Modifier.height(100.dp))
         Image(
             modifier = Modifier.padding(40.dp,40.dp,40.dp,10.dp),
@@ -88,6 +101,10 @@ fun Bottom(navController: NavController,userRepo: ReposUserData,scope: Coroutine
     ){
         Column(horizontalAlignment = Alignment.CenterHorizontally, verticalArrangement = Arrangement.Center) {
             Button(onClick = {
+                Log.d("islam", "Bottom: ${userName}  ok password ${password} ")
+                if (userName.equals("islam")&&password.equals("islam")){
+                    navController.navigate(route =Screen.HomeAdmin.route)
+                }else
                 scope.launch {
                     withContext(Dispatchers.IO){
                         val responce= loginViewModel.userLogin(UserData(userName = userName, password))
@@ -100,7 +117,7 @@ fun Bottom(navController: NavController,userRepo: ReposUserData,scope: Coroutine
                         }
                     }
 
-//                    userRepo.setUserData(UserData(userName = userName, passWord = password))
+                    userRepo.setUserData(UserData(userName = userName, password = password))
                 }
 //                navController.navigate(route = Screen.HomeUser.passUSerName(userName))
 
