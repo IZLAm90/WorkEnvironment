@@ -24,6 +24,7 @@ import com.example.workenvironment.ui.theme.WorkEnvironmentTheme
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import kotlin.math.log
 
 private val PREFERENCES_NAME_USER =  "sample_datastore_prefs"
 @AndroidEntryPoint
@@ -43,11 +44,11 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Gray
                 ) {
-                    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(navController.context)
                     val scope= rememberCoroutineScope()
                     navController= rememberNavController()
                     userRepo = ReposUserData(prefsDataStore)
                     SetupNavGraph(navController, userRepo!!,scope)
+                    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(navController.context)
                     getLocation(this,mFusedLocationClient)
                 }
             }
@@ -60,12 +61,17 @@ fun getLocation(context: Activity,mFusedLocationClient :FusedLocationProviderCli
         ActivityCompat.requestPermissions(context, arrayOf(android.Manifest.permission.ACCESS_FINE_LOCATION),100)
         return
     }
+    Log.d("islam", "getLocation: ")
     val location = mFusedLocationClient.lastLocation
+    Log.d("islam", "getLocation: ${location.isSuccessful}")
     location.addOnSuccessListener {
         if (it !=null){
             Log.d("islam", "getLocation: ${it.longitude}")
             Log.d("islam", "getLocation: ${it.latitude}")
         }
+    }.addOnFailureListener {
+        Log.d("islam", "getLocation fal: ${it.message}")
+
     }
 }
 @Preview(showBackground = true)
