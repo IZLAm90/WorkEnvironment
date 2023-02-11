@@ -1,5 +1,8 @@
 package com.example.workenvironment.presentation.homeuser
 
+import android.content.Context
+import android.content.pm.PackageManager
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,11 +17,19 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.core.app.ActivityCompat
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationServices
+
+
 
 @Composable
 fun HomeUSer(navController: NavController){
+
+
+
     Column(
         modifier = Modifier.fillMaxSize(),
         verticalArrangement = Arrangement.Center,
@@ -26,7 +37,8 @@ fun HomeUSer(navController: NavController){
     ) {
         Text(
             modifier = Modifier.clickable {
-                navController.popBackStack()},
+                navController.popBackStack()
+                                          },
             text = "LOGIN",
             color = Color.Black,
             fontSize = MaterialTheme.typography.h3.fontSize,
@@ -42,6 +54,7 @@ fun HomeUSer(navController: NavController){
         )
     }
 }
+
 @Preview (showBackground = true)
 @Composable
 fun SeeView(){
