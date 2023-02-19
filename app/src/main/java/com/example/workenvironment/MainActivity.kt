@@ -18,17 +18,21 @@ import androidx.core.app.ActivityCompat
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import androidx.work.*
 import com.example.workenvironment.datastore.ReposUserData
 import com.example.workenvironment.navgrave.SetupNavGraph
+import com.example.workenvironment.service.LocationCheckWorker
 import com.example.workenvironment.ui.theme.WorkEnvironmentTheme
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.concurrent.TimeUnit
 import kotlin.math.log
 
 private val PREFERENCES_NAME_USER =  "sample_datastore_prefs"
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
+
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     private val Context.prefsDataStore by preferencesDataStore(name = PREFERENCES_NAME_USER)
@@ -37,6 +41,21 @@ class MainActivity : ComponentActivity() {
     lateinit var navController:NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        val constraints = Constraints.Builder()
+            .setRequiredNetworkType(NetworkType.CONNECTED)
+            .build()
+
+        val periodicWorkRequest =
+            PeriodicWorkRequest.Builder(
+                LocationCheckWorker::class.java,
+                12, TimeUnit.HOURS)
+                .setConstraints(constraints)
+                .build()
+
+        WorkManager.getInstance(this).enqueueUniquePeriodicWork(
+            "location_check_worker",
+            ExistingPeriodicWorkPolicy.REPLACE,
+            periodicWorkRequest)
         setContent {
             WorkEnvironmentTheme {
                 // A surface container using the 'background' color from the theme
