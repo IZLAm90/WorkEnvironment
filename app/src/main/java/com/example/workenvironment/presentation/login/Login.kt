@@ -106,16 +106,16 @@ fun Bottom(navController: NavController,userRepo: ReposUserData,scope: Coroutine
                     navController.navigate(route =Screen.HomeAdmin.route)
                 }else
                 scope.launch {
-                    withContext(Dispatchers.IO){
-                        val responce= loginViewModel.userLogin(UserData(userName = userName, password))
-                        withContext(Dispatchers.Main){
-                            if (responce.success){
-                                Log.d("islam", "Bottom: okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
-                            }else{
-                                Log.d("islam", "Bottom: nooooooooooooo${responce.message} ")
-                            }
-                        }
-                    }
+//                    withContext(Dispatchers.IO){
+//                        val responce= loginViewModel.userLogin(UserData(userName = userName, password))
+//                        withContext(Dispatchers.Main){
+//                            if (responce.success){
+//                                Log.d("islam", "Bottom: okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk")
+//                            }else{
+//                                Log.d("islam", "Bottom: nooooooooooooo${responce.message} ")
+//                            }
+//                        }
+//                    }
 
                     userRepo.setUserData(UserData(userName = userName, password = password))
                 }

@@ -59,7 +59,7 @@ class LoactionTrackingService : Service() {
     }
 
     override fun onBind(p0: Intent?): IBinder? {
-      return null
+        return null
     }
 
     override fun onDestroy() {

@@ -8,11 +8,12 @@ import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Surface
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.core.app.ActivityCompat
 import androidx.datastore.preferences.preferencesDataStore
@@ -63,12 +64,18 @@ class MainActivity : ComponentActivity() {
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Gray
                 ) {
-                    val scope= rememberCoroutineScope()
-                    navController= rememberNavController()
-                    userRepo = ReposUserData(prefsDataStore)
-                    SetupNavGraph(navController, userRepo!!,scope)
-                    mFusedLocationClient = LocationServices.getFusedLocationProviderClient(navController.context)
-                    getLocation(this,mFusedLocationClient)
+                    Scaffold(topBar = { TopAppBar(backgroundColor = MaterialTheme.colors.primary,
+                        title = { Text(stringResource(id = R.string.app_name)) }
+                    )}) {
+                        val scope= rememberCoroutineScope()
+                        navController= rememberNavController()
+                        userRepo = ReposUserData(prefsDataStore)
+                        SetupNavGraph(navController, userRepo!!,scope)
+//                        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(navController.context)
+//                        getLocation(this,mFusedLocationClient)
+                    }
+
+
                 }
             }
         }
