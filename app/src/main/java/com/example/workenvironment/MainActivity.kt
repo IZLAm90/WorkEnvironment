@@ -1,9 +1,13 @@
 package com.example.workenvironment
 
 import android.app.Activity
+import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
+import android.content.ServiceConnection
 import android.content.pm.PackageManager
 import android.os.Bundle
+import android.os.IBinder
 import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -23,7 +27,9 @@ import androidx.work.*
 import com.example.workenvironment.datastore.ReposUserData
 import com.example.workenvironment.navgrave.SetupNavGraph
 import com.example.workenvironment.service.LocationCheckWorker
+import com.example.workenvironment.service.MediaService
 import com.example.workenvironment.ui.theme.WorkEnvironmentTheme
+import com.example.workenvironment.utils.PLAY
 import com.google.android.gms.location.FusedLocationProviderClient
 import com.google.android.gms.location.LocationServices
 import dagger.hilt.android.AndroidEntryPoint
@@ -33,15 +39,30 @@ import kotlin.math.log
 private val PREFERENCES_NAME_USER =  "sample_datastore_prefs"
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
+    private lateinit var mediaServiceConnection: MediaServiceConnection
     private lateinit var mFusedLocationClient: FusedLocationProviderClient
 
     private val Context.prefsDataStore by preferencesDataStore(name = PREFERENCES_NAME_USER)
     var userRepo : ReposUserData ?=null
+    inner class MediaServiceConnection(private val mediaService: MediaService) : ServiceConnection {
+        var isBound = false
 
+        override fun onServiceConnected(name: ComponentName?, service: IBinder?) {
+            isBound = true
+            mediaService.setMediaTitle("")
+        }
+
+        override fun onServiceDisconnected(name: ComponentName?) {
+            isBound = false
+        }
+    }
     lateinit var navController:NavHostController
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        mediaServiceConnection = MediaServiceConnection(MediaService())
+        val intent = Intent(this, MediaService::class.java)
+        bindService(intent, mediaServiceConnection, Context.BIND_AUTO_CREATE)
+        Log.d("media", "onCreate: activtiy ")
         val constraints = Constraints.Builder()
             .setRequiredNetworkType(NetworkType.CONNECTED)
             .build()
@@ -60,6 +81,7 @@ class MainActivity : ComponentActivity() {
         setContent {
             WorkEnvironmentTheme {
                 // A surface container using the 'background' color from the theme
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = Color.Gray
@@ -70,6 +92,14 @@ class MainActivity : ComponentActivity() {
                         val scope= rememberCoroutineScope()
                         navController= rememberNavController()
                         userRepo = ReposUserData(prefsDataStore)
+
+                        val intentPlay = Intent(this, MediaService::class.java).apply {
+                            action = PLAY
+                            putExtra("mediaTitle", "mediaTitle")
+                            putExtra("mediaUrl", "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3")
+                        }
+                        startService(intentPlay)
+                        Log.d("media", "onCreate: starttopplay ")
                         SetupNavGraph(navController, userRepo!!,scope)
 //                        mFusedLocationClient = LocationServices.getFusedLocationProviderClient(navController.context)
 //                        getLocation(this,mFusedLocationClient)

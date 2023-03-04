@@ -11,5 +11,6 @@ sealed class Screen(val route :String){
         fun passUSerName(name:String):String{return "homeuser?username=$name"}
     }
     object HomeAdmin :Screen(route = "homeadmin" )
+    object Statisitics :Screen(route = "statisitics")
 
 }
