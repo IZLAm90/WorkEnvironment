@@ -36,9 +36,7 @@ fun ProfileData(){
 fun Statistics() {
 
     val list = listOf(1) + ((0..100).map { it })
-    val animationProgress = remember {
-        androidx.compose.animation.core.Animatable(0f)
-    }
+    val animationProgress = remember { androidx.compose.animation.core.Animatable(0f) }
     Box(
         modifier = Modifier
             .background(Purple200)
